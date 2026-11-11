@@ -1,6 +1,5 @@
 {
 	"name": "widgora-web",
-	"version": "0.0.1",
 	"private": true,
 	"type": "module",
 	"packageManager": "pnpm@12.18.0",
@@ -13,7 +12,6 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
 		"lint": "prettier --check . && eslint .",

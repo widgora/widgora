@@ -1,5 +1,5 @@
 <!-- Title: "area: what changed" (lower case after the colon, no trailing period).
-     If there is an issue, start with "Fixes #N: ..." or "Refs #N: ...". -->
+     If there is an issue, the first line of this description is "Fixes #N: ..." or "Refs #N: ...". -->
 
 **What**
 -

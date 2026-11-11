@@ -11,6 +11,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	"github.com/widgora/widgora/internal/server"
@@ -76,8 +77,9 @@ func serve(args []string, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(*dataDir, 0o700); err != nil {
-		return fmt.Errorf("create data dir: %w", err)
+	dir, err := prepareDataDir(logger, *dataDir)
+	if err != nil {
+		return err
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -87,8 +89,29 @@ func serve(args []string, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	logger.Info("starting widgora", "version", version.Version, "commit", version.Commit, "data_dir", *dataDir)
+	logger.Info("starting widgora", "version", version.Version, "commit", version.Commit, "data_dir", dir)
 	return server.Serve(ctx, logger, ln, server.New(logger, webui.FS()))
+}
+
+// prepareDataDir creates the data directory and warns when an existing one is
+// readable by other users, since it will hold the database and credentials.
+func prepareDataDir(logger *slog.Logger, dir string) (string, error) {
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		return "", fmt.Errorf("data dir: %w", err)
+	}
+	if err := os.MkdirAll(abs, 0o700); err != nil {
+		return "", fmt.Errorf("create data dir: %w", err)
+	}
+	info, err := os.Stat(abs)
+	if err != nil {
+		return "", fmt.Errorf("data dir: %w", err)
+	}
+	if perm := info.Mode().Perm(); perm&0o077 != 0 {
+		logger.Warn("data dir is accessible by other users; chmod 700 recommended",
+			"data_dir", abs, "mode", fmt.Sprintf("%#o", perm))
+	}
+	return abs, nil
 }
 
 func newLogger(w io.Writer, level, format string) (*slog.Logger, error) {

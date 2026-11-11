@@ -31,9 +31,12 @@ func Serve(ctx context.Context, logger *slog.Logger, ln net.Listener, handler ht
 	srv := &http.Server{
 		Handler:           handler,
 		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      time.Minute,
 		IdleTimeout:       2 * time.Minute,
+		MaxHeaderBytes:    64 << 10,
 		ErrorLog:          slog.NewLogLogger(logger.Handler(), slog.LevelWarn),
-		BaseContext:       func(net.Listener) context.Context { return ctx },
+		BaseContext:       func(net.Listener) context.Context { return context.WithoutCancel(ctx) },
 	}
 
 	errc := make(chan error, 1)

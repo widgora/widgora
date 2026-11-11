@@ -2,6 +2,9 @@ package main
 
 import (
 	"bytes"
+	"log/slog"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -36,5 +39,37 @@ func TestRun(t *testing.T) {
 				t.Errorf("stderr = %q, want it to contain %q", stderr.String(), tt.stderr)
 			}
 		})
+	}
+}
+
+func TestPrepareDataDir(t *testing.T) {
+	var logs bytes.Buffer
+	logger := slog.New(slog.NewTextHandler(&logs, nil))
+
+	dir := filepath.Join(t.TempDir(), "new")
+	got, err := prepareDataDir(logger, dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	info, err := os.Stat(got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if perm := info.Mode().Perm(); perm != 0o700 {
+		t.Errorf("new data dir mode = %#o, want 0700", perm)
+	}
+	if logs.Len() != 0 {
+		t.Errorf("unexpected warning for a fresh dir: %s", logs.String())
+	}
+
+	open := t.TempDir()
+	if err := os.Chmod(open, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := prepareDataDir(logger, open); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(logs.String(), "accessible by other users") {
+		t.Errorf("no warning for a 0755 data dir, logs: %s", logs.String())
 	}
 }

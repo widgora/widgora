@@ -2,10 +2,6 @@ version: 2
 
 project_name: widgora
 
-before:
-  hooks:
-    - make web
-
 builds:
   - id: widgora
     main: ./cmd/widgora
