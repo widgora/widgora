@@ -1,0 +1,20 @@
+# Build output
+/dist/
+/web/build/
+/web/.svelte-kit/
+
+# Dependencies
+node_modules/
+
+# Test and coverage output
+coverage/
+*.out
+*.test
+
+# Local environment and editor files
+.env
+.env.*
+!.env.example
+.DS_Store
+.idea/
+.vscode/
