@@ -1,0 +1,19 @@
+# SPDX identifiers that may appear in shipped dependencies (Go modules and the
+# npm packages bundled into the web UI). Everything must be redistributable
+# under AGPL-3.0-only. `make licenses` fails on anything not listed here.
+0BSD
+AGPL-3.0
+AGPL-3.0-only
+AGPL-3.0-or-later
+Apache-2.0
+BSD-2-Clause
+BSD-3-Clause
+CC0-1.0
+GPL-3.0
+GPL-3.0-only
+GPL-3.0-or-later
+ISC
+MIT
+MPL-2.0
+OFL-1.1
+Unlicense

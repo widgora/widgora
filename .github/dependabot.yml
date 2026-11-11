@@ -1,0 +1,45 @@
+# One grouped pull request per ecosystem and week at most, and only for
+# releases that are at least a week old.
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directories: ["/", "/tools"]
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 2
+    groups:
+      go:
+        patterns: ["*"]
+    commit-message:
+      prefix: deps
+
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 2
+    groups:
+      web:
+        patterns: ["*"]
+    commit-message:
+      prefix: deps
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 2
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci

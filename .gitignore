@@ -18,3 +18,10 @@ coverage/
 .DS_Store
 .idea/
 .vscode/
+
+# Embedded web UI (copied in by `make web`)
+/internal/webui/dist/*
+!/internal/webui/dist/.gitkeep
+
+# Data directory of `make dev`
+/.dev-data/

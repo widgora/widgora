@@ -1,0 +1,36 @@
+version: 2
+
+project_name: widgora
+
+builds:
+  - id: widgora
+    main: ./cmd/widgora
+    binary: widgora
+    env:
+      - CGO_ENABLED=0
+    goos: [linux]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w
+      - -X github.com/widgora/widgora/internal/version.Version={{ .Tag }}
+      - -X github.com/widgora/widgora/internal/version.Commit={{ .ShortCommit }}
+      - -X github.com/widgora/widgora/internal/version.Date={{ .CommitDate }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  disable: true
+
+release:
+  prerelease: auto
